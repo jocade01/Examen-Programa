@@ -63,8 +63,9 @@ class Lightning extends Connection {
                     echo "<div class='element off'><h4><img src='img/bulb-icon-off.png'>". $name ."</h4><h1>". $wattage ."W.</h1><h4>". $zone ."</h4></div>"; }
             }
         }
-        
+//Crearemos la funcion getPotenciaZona para obtener los datos que queremos que salgan
         public function getPotenciaZona() {
+//Aqui meteremos los datos de la consulta en $sql y aparte nos aseguramos de que coja las lamparas encendidas y las distribuya por zonas
             $sql = "SELECT SUM(lamp_models.model_wattage) as power, zone_name FROM
             `lamps` INNER JOIN lamp_models on
             lamp_model=lamp_models.model_id inner join zones on lamps.lamp_zone = zones.zone_id
@@ -73,13 +74,16 @@ class Lightning extends Connection {
             $stmt = $this->getConn()->query($sql);
             $potencias = [];
             while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) {
+//Aqui introducimos al array $potencias una clave que sera el nombre de la zona con zone_name y un valor que es el power
                 $potencias[$row['zone_name']] = $row['power'];
                 
             }
             return $potencias;
         }
+//Creamos drawPotenciaZona para sacar por pantalla los datos que hemos sacado en getPotenciaZona
             public function drawPotenciaZona(){
                 $potencia = $this->getPotenciaZona();
+//Aqui recorremos $potencia y sacamos las variables de $zona y $potencias
                 foreach ($potencia as $zona => $potencias){
                 echo "<div class='center'><h2>Potencia por: $zona  </h2>";
                     echo "<br>" . $zona . ": " . $potencias . "W </br> "; 
